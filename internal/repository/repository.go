@@ -2,6 +2,7 @@ package repository
 
 import (
 	"GOLANGAPIGOVTECH/internal/model"
+	"log"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -16,24 +17,40 @@ func NewRepository(db *sqlx.DB) *Repository {
 
 // RegisterStudents links students to a teacher, creating new entries in the Registration table.
 func (r *Repository) RegisterStudents(teacherEmail string, studentEmails []string) error {
-
 	var teacherID int
-	err := r.db.Get(&teacherID, "SELECT id FROM teachers WHERE email = $1", teacherEmail)
+	// Log the attempt to find the teacher's ID
+	log.Printf("Attempting to find teacher ID for email: %s", teacherEmail)
+	err := r.db.Get(&teacherID, "SELECT teacher_id FROM teachers WHERE email = $1", teacherEmail)
 	if err != nil {
+		// Log the error if the teacher's ID couldn't be found
+		log.Printf("Error finding teacher ID for email %s: %v", teacherEmail, err)
 		return err
 	}
+	// Log the found teacher's ID
+	log.Printf("Found teacher ID: %d for email: %s", teacherID, teacherEmail)
 
 	for _, email := range studentEmails {
 		var studentID int
-		err := r.db.Get(&studentID, "SELECT id FROM students WHERE email = $1", email)
+		// Log the attempt to find each student's ID
+		log.Printf("Attempting to find student ID for email: %s", email)
+		err := r.db.Get(&studentID, "SELECT student_id FROM students WHERE email = $1", email)
 		if err != nil {
-			return err // Or continue to attempt to register other students
+			// Log the error if a student's ID couldn't be found
+			log.Printf("Error finding student ID for email %s: %v", email, err)
+			return err // Or consider logging and continuing with the next student
 		}
+		// Log the found student's ID
+		log.Printf("Found student ID: %d for email: %s", studentID, email)
 
-		_, err = r.db.Exec("INSERT INTO registrations (teacher_id, student_id) VALUES ($1, $2)", teacherID, studentID)
+		// Log the attempt to register the student to the teacher
+		log.Printf("Attempting to register student %d to teacher %d", studentID, teacherID)
+		_, err = r.db.Exec("INSERT INTO registrations (teacher_id, student_id) VALUES ($1, $2) ON CONFLICT (teacher_id, student_id) DO NOTHING", teacherID, studentID)
 		if err != nil {
-			return err // Or log this error and continue
+			log.Printf("Unexpected error during registration: %v", err)
+			return err
 		}
+		// Log successful registration
+		log.Printf("Successfully registered student %s to teacher %s", email, teacherEmail)
 	}
 	return nil
 }
