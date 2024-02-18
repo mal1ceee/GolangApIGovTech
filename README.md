@@ -30,6 +30,8 @@ Technical assessment for GovTech Software Engineer internship using Golang.
 
 7. To run the server, cd cmd/server/main.go to start the application 
 
+8. (Optional) To do Unit Testing, run go test ./...
+
 
 
 ## Change log
@@ -41,12 +43,13 @@ This is a record of all past commits for easy access and documentation.
 | 1402024 | 1. Initialize the file structure and added boilerplate <br> 2. Created and Tested the db connections using postgre 15 |
 | 15022024 | 1. Testing db connection to extract the the data from the table and printing it |
 | 16022024 | 1. Implemented the handler, service and repository code + bug fixes |
-| 18022024 | Fixed notifications and register API + refactor and bug fixes |
+| 18022024 | Fixed notifications and register API + refactor and bug fixes <br> 2. Tried to implement unit testing |
 
 ## Notes
 
 1. If there is any changes to the username, password or port, the config can be changed in the config.go file.
-2. Please install the necessary version as there are features that might not be available in older/newer version
-3. Still relatively new to Go so please dont mind the log messages and weird code (Had to google alot) :D
+2. Please install the necessary version as there are features that might not be available in older/newer version.
+3. Unit Testing is still abit iffy and unsure how to go about Unit testing.
+3. Still new to Go so please dont mind the log messages and weird code (Had to google alot) :D
 4. Thanks for looking through the code!!
 
