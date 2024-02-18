@@ -1,8 +1,8 @@
 # GolangApIGovTech
 
 Technical assessment for GovTech Software Engineer internship using Golang.
-- Building an API for backend 
-- Postman collection: https://api.postman.com/collections/30008705-b10c384c-3def-49f7-b499-c7cf54cdb430?access_key=PMAT-01HPX3KYPFJ8G2F0KFA08HNK0H
+- Building a backend API for assessment
+- Postman collection(Desktop to Test it locally): https://www.postman.com/kevvvvinn/workspace/govtech/collection/30008705-b10c384c-3def-49f7-b499-c7cf54cdb430?action=share&creator=30008705
 - 
 
 ## Prerequitesities 
@@ -20,13 +20,13 @@ Technical assessment for GovTech Software Engineer internship using Golang.
 
 2. After clonning the repo, run go mody tidy in root directory to install dependancies
 
-3.  Run CREATE DATABASE postgres
+3. Run CREATE DATABASE postgres
 
 4. Run -U postgres -d postgres -a -f (Path to database_schema.sql)
 
-5. psql -U postgres -d postgres -a -f (Path to seed.sql)
+5. psql -U postgres -d postgres -a -f (Path to seed.sql) to populate table
 
-6. After clonning the repo, run go mody tidy to install dependancies
+6. After clonning the repo, run go mod tidy to install dependancies
 
 7. To run the server, cd cmd/server/main.go to start the application 
 
