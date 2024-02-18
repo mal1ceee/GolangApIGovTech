@@ -102,53 +102,64 @@ func (r *Repository) SuspendStudent(studentEmail string) error {
 func (r *Repository) GetStudentsForNotifications(teacherEmail string, mentionedEmails []string) ([]model.Student, error) {
 	var students []model.Student
 
+	log.Printf("Getting students for notifications for teacher: %s with mentioned emails: %v", teacherEmail, mentionedEmails)
+
 	// Step 1: Find the teacher's ID based on their email.
 	var teacherID int
 	err := r.db.Get(&teacherID, "SELECT teacher_id FROM teachers WHERE email = $1", teacherEmail)
 	if err != nil {
+		log.Printf("Failed to find teacher ID for email %s: %v", teacherEmail, err)
 		return nil, err
 	}
+
+	log.Printf("Found teacher ID: %d", teacherID)
 
 	// Step 2: Query to select students registered to the teacher and not suspended.
 	registeredStudentsQuery := `
     SELECT DISTINCT s.student_id, s.email
     FROM students s
     JOIN registrations r ON s.student_id = r.student_id
-    WHERE r.teacher_id = ? AND s.is_suspended = FALSE
+    WHERE r.teacher_id = $1 AND s.is_suspended = FALSE
     `
 
 	err = r.db.Select(&students, registeredStudentsQuery, teacherID)
 	if err != nil {
+		log.Printf("Failed to retrieve registered students for teacher ID %d: %v", teacherID, err)
 		return nil, err
 	}
 
+	log.Printf("Retrieved registered students: %v", students)
+
 	// Step 3: Add mentioned students who are not suspended, if they are not already included.
-	// This requires checking each mentioned email to see if it's not in the already selected students' list.
-	// Then, querying for each mentioned student that is not suspended and adding them to the list.
 	for _, email := range mentionedEmails {
 		var mentionedStudent model.Student
 		mentionedStudentQuery := `
         SELECT student_id, email
         FROM students
-        WHERE email = ? AND is_suspended = FALSE
+        WHERE email = $1 AND is_suspended = FALSE
         `
 
 		err := r.db.Get(&mentionedStudent, mentionedStudentQuery, email)
-		// If there's no error, we found a student by the mentioned email who is not suspended.
-		if err == nil {
-			// Check if this student is already in the students slice to avoid duplicates.
-			alreadyIncluded := false
-			for _, stu := range students {
-				if stu.Email == email {
-					alreadyIncluded = true
-					break
-				}
-			}
-			if !alreadyIncluded {
-				students = append(students, mentionedStudent)
-			}
+		if err != nil {
+			log.Printf("Failed to retrieve mentioned student with email %s: %v", email, err)
+			// Consider whether you want to return an error or just log and continue
+			continue // This will skip this iteration and try the next email, if any
 		}
 
+		log.Printf("Found mentioned student: %s", mentionedStudent.Email)
+
+		// Check if this student is already in the students slice to avoid duplicates.
+		alreadyIncluded := false
+		for _, stu := range students {
+			if stu.Email == email {
+				alreadyIncluded = true
+				break
+			}
+		}
+		if !alreadyIncluded {
+			students = append(students, mentionedStudent)
+			log.Printf("Added mentioned student to the list: %s", mentionedStudent.Email)
+		}
 	}
 
 	return students, nil

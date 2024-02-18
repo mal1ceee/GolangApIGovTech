@@ -3,6 +3,7 @@ package handler
 import (
 	"GOLANGAPIGOVTECH/internal/service"
 	"net/http"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 )
@@ -49,7 +50,7 @@ func (h *Handler) registerStudents(c *gin.Context) {
 	err := h.svc.RegisterStudents(req.Teacher, req.Students)
 	if err != nil {
 		// If the service method returns an error, return a 500 Internal Server Error response
-		// In a real application, you might want to handle different types of errors differently
+
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register students"})
 		return
 	}
@@ -83,7 +84,7 @@ func (h *Handler) getCommonStudents(c *gin.Context) {
 func (h *Handler) suspendStudent(c *gin.Context) {
 	// Define a struct to match the expected request body format
 	var req struct {
-		StudentEmail string `json:"student"` // Assuming the payload uses "student" to denote the student's email
+		StudentEmail string `json:"student"`
 	}
 
 	// Bind the incoming JSON to the struct
@@ -103,7 +104,7 @@ func (h *Handler) suspendStudent(c *gin.Context) {
 	err := h.svc.SuspendStudent(req.StudentEmail)
 	if err != nil {
 		// If suspending the student fails (e.g., student not found or database error), return a 500 Internal Server Error
-		// You might also consider more specific error handling to differentiate between not found and server errors
+
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to suspend the student"})
 		return
 	}
@@ -113,46 +114,46 @@ func (h *Handler) suspendStudent(c *gin.Context) {
 }
 
 func (h *Handler) getStudentsForNotifications(c *gin.Context) {
-	// Define a struct to match the expected request body format
 	var req struct {
 		Teacher      string `json:"teacher"`
 		Notification string `json:"notification"`
 	}
 
-	// Bind the incoming JSON to the struct
 	if err := c.BindJSON(&req); err != nil {
-		// If there's an error in parsing the request, return a 400 Bad Request response
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
 		return
 	}
 
-	// Validate the extracted information
 	if req.Teacher == "" || req.Notification == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Teacher and notification text are required"})
 		return
 	}
 
-	// Extract mentioned student emails from the notification text
-	// This is a simplified approach; you might need a more robust method for extracting emails
 	mentionedEmails := extractMentionedEmails(req.Notification)
 
-	// Call the service method to get eligible students
 	students, err := h.svc.GetStudentsForNotifications(req.Teacher, mentionedEmails)
 	if err != nil {
-		// Handle potential errors, such as database errors
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve students for notifications"})
 		return
 	}
 
-	// If successful, return the list of students
-	c.JSON(http.StatusOK, gin.H{"students": students})
+	c.JSON(http.StatusOK, gin.H{"recipients": students})
 }
 
-// A simplified example function for extracting emails mentioned in the notification text
+// extractMentionedEmails extracts email addresses mentioned in the notification text.
 func extractMentionedEmails(notification string) []string {
-	// Placeholder for email extraction logic
-	// In a real scenario, you would use regex or similar to find emails in the notification text
 	var emails []string
-	// TODO: Implement email extraction from the notification text
+	emailRegex := regexp.MustCompile(`[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}`)
+	matches := emailRegex.FindAllString(notification, -1)
+
+	// Ensure unique emails only
+	emailMap := make(map[string]bool)
+	for _, email := range matches {
+		if _, exists := emailMap[email]; !exists {
+			emails = append(emails, email)
+			emailMap[email] = true
+		}
+	}
+
 	return emails
 }
