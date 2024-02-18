@@ -21,7 +21,7 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/register", h.registerStudents)
 	router.GET("/api/commonstudents", h.getCommonStudents)
 	router.POST("/api/suspend", h.suspendStudent)
-	router.POST("/api/notifications", h.getStudentsForNotifications)
+	router.POST("/api/retrievefornotifications", h.getStudentsForNotifications)
 }
 
 func (h *Handler) getStudents(c *gin.Context) {
@@ -29,8 +29,6 @@ func (h *Handler) getStudents(c *gin.Context) {
 		"message": "Welcome to the students API!",
 	})
 }
-
-
 
 func (h *Handler) registerStudents(c *gin.Context) {
 	// Define a struct to match the expected request body format

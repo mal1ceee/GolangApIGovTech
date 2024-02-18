@@ -28,10 +28,17 @@ Technical assessment for GovTech Software Engineer internship using Golang.
 
 6. After clonning the repo, run go mod tidy to install dependancies
 
-7. To run the server, cd cmd/server/main.go to start the application 
+7. To run the server, cd cmd/server/main.go to start the application (Allow access)
 
 8. (Optional) To do Unit Testing, run go test ./...
 
+## Possible API calls
+
+1. /api/students
+2. /api/register
+3. /api/commonstudents
+4. /api/suspend
+5. /api/retrievefornotifications
 
 
 ## Change log
