@@ -3,7 +3,7 @@
 Technical assessment for GovTech Software Engineer internship using Golang.
 - Building a backend API for assessment
 - Postman collection(Desktop to Test it locally): https://www.postman.com/kevvvvinn/workspace/govtech/collection/30008705-b10c384c-3def-49f7-b499-c7cf54cdb430?action=share&creator=30008705
-- 
+- Youtube link: https://youtu.be/j5HYB6SSu9Y
 
 ## Prerequitesities 
 
