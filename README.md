@@ -47,7 +47,7 @@ This is a record of all past commits for easy access and documentation.
 
 ## Notes
 
-1. If there is any changes to the username, password or port, the config can be changed in the config.go file.
+1. If there is any changes to the username (postgres), password (password1) or port(localhost:8080), the config can be changed in the config.go file.
 2. Please install the necessary version as there are features that might not be available in older/newer version.
 3. Unit Testing is still abit iffy and unsure how to go about Unit testing.
 3. Still new to Go so please dont mind the log messages and weird code (Had to google alot) :D
