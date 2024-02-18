@@ -17,11 +17,11 @@ func NewHandler(svc *service.Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router *gin.Engine) {
-	router.GET("/students", h.getStudents)
-	router.POST("/register", h.registerStudents)
-	router.GET("/commonstudents", h.getCommonStudents)
-	router.POST("/suspend", h.suspendStudent)
-	router.POST("/notifications", h.getStudentsForNotifications)
+	router.GET("/api/students", h.getStudents)
+	router.POST("/api/register", h.registerStudents)
+	router.GET("/api/commonstudents", h.getCommonStudents)
+	router.POST("/api/suspend", h.suspendStudent)
+	router.POST("/api/notifications", h.getStudentsForNotifications)
 }
 
 func (h *Handler) getStudents(c *gin.Context) {
