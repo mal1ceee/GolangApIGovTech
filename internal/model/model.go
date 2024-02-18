@@ -4,7 +4,7 @@ type Student struct {
 	ID     int    `db:"student_id"`
 	Email  string `db:"email"`
 	Status bool   `db:"is_suspended"`
-	// Adjust fields according to your actual table structure
+	
 }
 
 type Teacher struct {

@@ -36,7 +36,7 @@ func TestGetCommonStudents(t *testing.T) {
 	assert.Equal(t, students[0].Email, "student1@gmail.com")
 	assert.Equal(t, students[1].Email, "student2@gmail.com")
 
-	// Ensure all expectations were met
+	
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}

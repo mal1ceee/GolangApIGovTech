@@ -30,7 +30,7 @@ func (h *Handler) getStudents(c *gin.Context) {
 	})
 }
 
-// Implement additional handlers for your user stories
+
 
 func (h *Handler) registerStudents(c *gin.Context) {
 	// Define a struct to match the expected request body format

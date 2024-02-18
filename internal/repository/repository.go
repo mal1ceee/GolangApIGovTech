@@ -56,12 +56,11 @@ func (r *Repository) RegisterStudents(teacherEmail string, studentEmails []strin
 }
 
 // GetCommonStudents retrieves students who are registered to all the given teachers.
-// Adjust this function based on your specific SQL schema and logic requirements.
+
 func (r *Repository) GetCommonStudents(teacherEmails []string) ([]model.Student, error) {
 	var students []model.Student
 
-	// Construct a query to count the number of unique teachers per student
-	// that matches the list of provided teacher emails.
+	
 	// Only students with a count equal to the number of provided teacher emails are selected.
 	query := `
     SELECT s.student_id, s.email
@@ -79,7 +78,7 @@ func (r *Repository) GetCommonStudents(teacherEmails []string) ([]model.Student,
 		return nil, err
 	}
 
-	// sqlx.In returns a query with '?' placeholders, we need to rebind it for our database
+	
 	query = r.db.Rebind(query)
 
 	// Execute the query
@@ -98,13 +97,13 @@ func (r *Repository) SuspendStudent(studentEmail string) error {
 }
 
 // GetStudentsForNotifications retrieves students who are eligible to receive a notification from a teacher.
-// This includes students who are not suspended and are either registered to the teacher or mentioned in the notification.
+
 func (r *Repository) GetStudentsForNotifications(teacherEmail string, mentionedEmails []string) ([]model.Student, error) {
 	var students []model.Student
 
 	log.Printf("Getting students for notifications for teacher: %s with mentioned emails: %v", teacherEmail, mentionedEmails)
 
-	// Step 1: Find the teacher's ID based on their email.
+	
 	var teacherID int
 	err := r.db.Get(&teacherID, "SELECT teacher_id FROM teachers WHERE email = $1", teacherEmail)
 	if err != nil {
@@ -114,7 +113,7 @@ func (r *Repository) GetStudentsForNotifications(teacherEmail string, mentionedE
 
 	log.Printf("Found teacher ID: %d", teacherID)
 
-	// Step 2: Query to select students registered to the teacher and not suspended.
+
 	registeredStudentsQuery := `
     SELECT DISTINCT s.student_id, s.email
     FROM students s
@@ -130,7 +129,7 @@ func (r *Repository) GetStudentsForNotifications(teacherEmail string, mentionedE
 
 	log.Printf("Retrieved registered students: %v", students)
 
-	// Step 3: Add mentioned students who are not suspended, if they are not already included.
+	
 	for _, email := range mentionedEmails {
 		var mentionedStudent model.Student
 		mentionedStudentQuery := `
@@ -142,8 +141,8 @@ func (r *Repository) GetStudentsForNotifications(teacherEmail string, mentionedE
 		err := r.db.Get(&mentionedStudent, mentionedStudentQuery, email)
 		if err != nil {
 			log.Printf("Failed to retrieve mentioned student with email %s: %v", email, err)
-			// Consider whether you want to return an error or just log and continue
-			continue // This will skip this iteration and try the next email, if any
+			
+			continue 
 		}
 
 		log.Printf("Found mentioned student: %s", mentionedStudent.Email)
